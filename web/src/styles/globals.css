@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+@layer components {
+  .input {
+    @apply rounded border bg-white py-3 px-6 outline-none transition ease-in-out focus:border-transparent focus:ring-2 focus:ring-orange-500;
+  }
+}

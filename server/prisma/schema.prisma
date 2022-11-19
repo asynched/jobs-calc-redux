@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int    @id() @default(autoincrement())
+  name         String
+  email        String @unique()
+  password     String
+  profilePhoto String @map("profile_photo")
+
+  planning Planning?
+  jobs     Job[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  @@map("users")
+}
+
+model Planning {
+  id                   Int   @id() @default(autoincrement())
+  earnPerMonth         Float @default(2000) @map("earn_per_month")
+  workHoursPerDay      Int   @default(8) @map("work_hours_per_day")
+  workDaysPerWeek      Int   @default(5) @map("work_days_per_week")
+  vacationWeeksPerYear Int   @default(2) @map("vacation_weeks_per_year")
+  hourlyValue          Float @default(50) @map("hourly_value")
+
+  userId Int  @unique() @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  @@map("plannings")
+}
+
+model Job {
+  id             Int     @id() @default(autoincrement())
+  name           String
+  completed      Boolean @default(false)
+  hoursPerDay    Int     @map("hours_per_day")
+  estimatedHours Int     @map("estimated_hours")
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt() @map("updated_at")
+
+  @@map("jobs")
+}
